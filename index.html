@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>荒謬性別計算器 (人名版)</title>
+    
+    <style>
+        /* 基本重設和佈局 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .app-container {
+            width: 360px;
+            height: 640px;
+            background-color: #f0f0f0; 
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        /* 頂部標題 */
+        .header {
+            text-align: center;
+            color: black;
+            font-size: 22px; /* 略微放大 */
+            font-weight: bold;
+            padding: 15px 0;
+        }
+
+        /* 主要白色卡片 */
+        .main-card {
+            background-color: white;
+            margin: 20px;
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* 輸入框樣式 */
+        .input-group {
+            margin-bottom: 30px;
+        }
+        
+        .name-input {
+            width: 90%;
+            padding: 15px;
+            margin-top: 10px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+            box-sizing: border-box; /* 確保 padding 不會增加總寬度 */
+            transition: border-color 0.2s;
+        }
+
+        .name-input:focus {
+            border-color: #1a73e8;
+            outline: none;
+        }
+
+        /* 開始檢測按鈕 */
+        .big-button {
+            background-color: #e91e63; /* 換個更活潑的顏色 */
+            color: white;
+            width: 90%; /* 寬度配合輸入框 */
+            padding: 15px 0;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .big-button:hover:not(:disabled) {
+            background-color: #c2185b;
+        }
+
+        /* 按鈕禁用狀態 */
+        .big-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* 提示文字和底部聲明 */
+        .hint-text {
+            font-size: 14px;
+            color: #555;
+            margin-top: 20px;
+        }
+        .footer-info, .footer-info-modal {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 15px;
+        }
+        .footer-info-modal {
+            margin-top: 30px;
+        }
+
+        /* 彈出視窗 (Modal) 樣式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px 20px;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            font-size: 22px;
+            color: #333;
+        }
+
+        .result-text {
+            font-size: 18px;
+            font-weight: normal;
+            margin: 20px 0 10px 0;
+            color: #555;
+        }
+
+        .name-highlight {
+            font-weight: bold;
+            color: #e91e63;
+        }
+        
+        .gender {
+            color: #1a73e8; /* 換個顏色 */
+            font-size: 24px;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .confirm-button {
+            background-color: #e91e63; 
+            color: white;
+            padding: 10px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
+        
+        .confirm-button:hover {
+            background-color: #c2185b;
+        }
+
+
+        /* 隱藏類別 */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">🔮 荒謬性別分析儀 🤖</div>
+
+        <div class="main-card">
+            
+            <div class="input-group">
+                <input type="text" id="nameInput" class="name-input" placeholder="請輸入您要檢測的人名" maxlength="20">
+            </div>
+
+            <button id="startDetectBtn" class="big-button" disabled>
+                🚀 開始檢測性別
+            </button>
+
+            <p class="hint-text">輸入任何一個名字，讓先進的荒謬AI給出判斷！</p>
+
+            <div class="footer-info">
+                <p>基於薛丁格貓量子算法 | 準確率0%</p>
+            </div>
+        </div>
+
+        <div id="resultModal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h3>分析結果出爐！</h3>
+                <p class="result-text">
+                    根據量子波動測算，<span id="resultName" class="name-highlight"></span> 的性別是：
+                    <span id="resultGender" class="gender"></span>
+                </p>
+                
+                <button id="confirmBtn" class="confirm-button">再測一次</button>
+
+                <div class="footer-info-modal">
+                    <p>此結果純屬娛樂，請勿當真！</p>
+                    <p>科學警告：本結果會讓您大笑</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 獲取所有相關元素
+            const nameInput = document.getElementById('nameInput');
+            const startDetectBtn = document.getElementById('startDetectBtn');
+            const resultModal = document.getElementById('resultModal');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const resultName = document.getElementById('resultName');
+            const resultGender = document.getElementById('resultGender');
+            
+            // 荒謬性別清單
+            const absurdGenders = [
+                '戰鬥直升機 🚁',
+                '一顆馬鈴薯 🥔',
+                '純粹的能量 (E=mc²) ✨',
+                '正在發育的黴菌 🦠',
+                '一個數學常數 (π) 📏',
+                '會思考的香蕉 🍌',
+                '未定義的 NaN ❓',
+                '一個被遺忘的夢境 💭',
+                '電子的波函數 🌊',
+                '一個無限循環的 Bug 🐛',
+                '宇宙中的暗物質 ⚫'
+            ];
+
+            // 隨機選擇一個性別
+            function getRandomGender() {
+                const index = Math.floor(Math.random() * absurdGenders.length);
+                return absurdGenders[index];
+            }
+
+            // --- 1. 處理輸入框變更 ---
+            nameInput.addEventListener('input', function() {
+                // 只有當輸入框不為空時，才啟用按鈕
+                startDetectBtn.disabled = this.value.trim() === '';
+            });
+
+            // --- 2. 處理「開始檢測」按鈕 ---
+            startDetectBtn.addEventListener('click', function() {
+                const name = nameInput.value.trim();
+                
+                if (name) {
+                    // 設定結果彈窗的文字
+                    resultName.textContent = name;
+                    resultGender.textContent = getRandomGender();
+
+                    // 顯示結果彈窗
+                    resultModal.classList.remove('hidden');
+                }
+            });
+
+            // --- 3. 處理「再測一次」按鈕 ---
+            confirmBtn.addEventListener('click', function() {
+                // 隱藏結果彈窗
+                resultModal.classList.add('hidden');
+                
+                // 重設介面回初始狀態
+                nameInput.value = ''; // 清空輸入框
+                startDetectBtn.disabled = true; // 禁用按鈕
+            });
+        });
+    </script>
+</body>
+</html>

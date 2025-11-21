@@ -233,23 +233,33 @@
             const resultName = document.getElementById('resultName');
             const resultGender = document.getElementById('resultGender');
             
-            // 荒謬性別清單
+            // 荒謬性別清單 (已擴充!)
             const absurdGenders = [
-                '戰鬥直升機 🚁',
-                '一顆馬鈴薯 🥔',
-                '純粹的能量 (E=mc²) ✨',
-                '正在發育的黴菌 🦠',
-                '一個數學常數 (π) 📏',
-                '會思考的香蕉 🍌',
-                '未定義的 NaN ❓',
-                '一個被遺忘的夢境 💭',
-                '電子的波函數 🌊',
-                '一個無限循環的 Bug 🐛',
-                '宇宙中的暗物質 ⚫'
+                '戰鬥直升機 🚁', '一顆馬鈴薯 🥔', '純粹的能量 (E=mc²) ✨',
+                '正在發育的黴菌 🦠', '一個數學常數 (π) 📏', '會思考的香蕉 🍌',
+                '未定義的 NaN ❓', '一個被遺忘的夢境 💭', '電子的波函數 🌊',
+                '一個無限循環的 Bug 🐛', '宇宙中的暗物質 ⚫',
+                '一塊會唱歌的磚頭 🧱', '四維空間的陰影 👻', '昨天的早餐券 🎟️',
+                '充滿氣體的氣球 🎈', '一隻不想上班的貓 🐈', '遺失的 $2.5 \times 10^{-19}$ 焦耳 💎',
+                '不存在的虛數時間 ⏰', '薛丁格的空調遙控器 🌡️', '一本關於恐龍的烹飪書 🦖',
+                '一團迷路的雲 ☁️', '永遠的星期二 🗓️', '一個過度興奮的句號 .!',
+                '正在發功的 USB-C 線 🔌', '被社會遺忘的橡皮筋 🎗️', '充滿哲理的鹽罐 🧂',
+                '一串沒有意義的亂碼 🔢', '宇宙級別的拖延症 🛌', '一個會閃現的杯子 ☕',
+                '五年前的網路密碼 🔑', '一堆未讀的通知 🔔', '超光速的蝸牛 🐌',
+                '所有襪子的單身配偶 🧦', '被禁止的第13種顏色 🌈', '一個錯誤的引號 “',
+                '專門用來後悔的機器 ⚙️', '月球上的交通燈 🚦', '來自平行宇宙的聲音 🔊',
+                '一隻正在思考的鸚鵡 🦜', '漂浮在湯裡的叉子 🍴', '一顆還沒爆炸的笑彈 😂',
+                '一條被放生的魚 🐟', '一張過期的世界地圖 🗺️'
             ];
-
-            // 隨機選擇一個性別
-            function getRandomGender() {
+            
+            // --- 核心邏輯修改：增加特殊判斷 ---
+            function getGender(name) {
+                // 檢查是否為特殊人物 (忽略前後空白並轉為大寫以增加健壯性)
+                if (name.trim().toUpperCase() === '謝朋洋') {
+                    return '創始人 🎉'; // 特定輸出
+                }
+                
+                // 否則，返回隨機的荒謬性別
                 const index = Math.floor(Math.random() * absurdGenders.length);
                 return absurdGenders[index];
             }
@@ -267,7 +277,8 @@
                 if (name) {
                     // 設定結果彈窗的文字
                     resultName.textContent = name;
-                    resultGender.textContent = getRandomGender();
+                    // 使用修改後的函數來獲取結果
+                    resultGender.textContent = getGender(name); 
 
                     // 顯示結果彈窗
                     resultModal.classList.remove('hidden');
